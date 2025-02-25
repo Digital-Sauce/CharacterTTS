@@ -1,19 +1,17 @@
 # Character TTS
 
-Character TTS is a simple yet powerful plugin that integrates Azure Text-to-Speech capabilities into your project. It converts dialogue into spoken audio using a variety of Azure voices.
+Character TTS is a simple yet powerful plugin that integrates Azure Text-to-Speech capabilities into the RuneLite client. It converts written dialogue into spoken audio using the Azure cloud API.
 
 ## Features
 
 - **Azure Integration:**  
-  Configure your API key and region to connect to Azure’s Text-to-Speech services.
+  Configure your API key and region (northcentralus) to connect to Azure’s Text-to-Speech services.
 - **Voice Selection:**  
   - Choose from all available Azure voices.
   - Assign a dedicated voice for the player character.
   - Select a different voice for all non-player characters (NPCs).
 - **Dialogue Playback:**  
   Currently, only dialogue is spoken.
-- **Planned Enhancements:**  
-  Future updates will support unique voices for named NPCs, adding more personality and depth to in-game interactions.
 
 ## Installation
 
@@ -36,19 +34,6 @@ Before using the plugin, set up your Azure credentials:
 2. **Voice Settings:**
    - Select the desired Azure voices from the provided list.
    - Assign one voice for the player and another for all NPCs.
-
-## Usage
-
-After installation and configuration:
-
-1. Launch your application with the plugin enabled.
-2. The plugin will convert in-game dialogue into speech using the selected voices.
-3. Enjoy the enhanced audio experience.
-
-## Future Development
-
-- **Unique NPC Voices:**  
-  Future updates will allow for assigning unique voices to named NPCs for a more immersive experience.
 
 ## Contributing
 
