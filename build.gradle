@@ -24,6 +24,9 @@ dependencies {
 	testImplementation 'junit:junit:4.12'
 	testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
 	testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
+
+	implementation group: 'com.microsoft.cognitiveservices.speech', name: 'client-sdk', version: "1.42.0", ext: "jar"
+	implementation 'org.json:json:20210307'
 }
 
 group = 'com.example'
@@ -32,6 +35,17 @@ version = '1.0-SNAPSHOT'
 tasks.withType(JavaCompile).configureEach {
 	options.encoding = 'UTF-8'
 	options.release.set(11)
+}
+
+sourceSets {
+	main {
+		java.srcDirs = ['src/main/java']
+		resources.srcDirs = ['src/main/resources']
+	}
+}
+
+processResources {
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 tasks.register('shadowJar', Jar) {
