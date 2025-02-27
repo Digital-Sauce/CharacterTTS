@@ -38,13 +38,23 @@ public interface CharacterTTSConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "npcVoiceName",
-			name = "NPC Voice Name",
-			description = "The name of the Azure voice to use for NPC dialogue"
+			keyName = "npcMaleVoiceName",
+			name = "NPC Male Voice Name",
+			description = "The name of the Azure voice to use for male NPC dialogue"
 	)
-	default String npcVoiceName()
+	default String npcMaleVoiceName()
 	{
 		return "en-US-GuyNeural";
+	}
+
+	@ConfigItem(
+			keyName = "npcFemaleVoiceName",
+			name = "NPC Female Voice Name",
+			description = "The name of the Azure voice to use for female NPC dialogue"
+	)
+	default String npcFemaleVoiceName()
+	{
+		return "en-US-AriaNeural";
 	}
 
 	@ConfigItem(
@@ -78,21 +88,41 @@ public interface CharacterTTSConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "npcPitch",
-			name = "NPC Pitch",
-			description = "The pitch control for NPC TTS voice (e.g. default, +10%, -10%)"
+			keyName = "npcMalePitch",
+			name = "NPC Male Pitch",
+			description = "The pitch control for male NPC TTS voice (e.g. default, +10%, -10%)"
 	)
-	default String npcPitch()
+	default String npcMalePitch()
 	{
 		return "default";
 	}
 
 	@ConfigItem(
-			keyName = "npcVolume",
-			name = "NPC Volume",
-			description = "The volume control for NPC TTS voice (e.g. default, loud, soft)"
+			keyName = "npcMaleVolume",
+			name = "NPC Male Volume",
+			description = "The volume control for male NPC TTS voice (e.g. default, loud, soft)"
 	)
-	default String npcVolume()
+	default String npcMaleVolume()
+	{
+		return "default";
+	}
+
+	@ConfigItem(
+			keyName = "npcFemalePitch",
+			name = "NPC Female Pitch",
+			description = "The pitch control for female NPC TTS voice (e.g. default, +10%, -10%)"
+	)
+	default String npcFemalePitch()
+	{
+		return "default";
+	}
+
+	@ConfigItem(
+			keyName = "npcFemaleVolume",
+			name = "NPC Female Volume",
+			description = "The volume control for female NPC TTS voice (e.g. default, loud, soft)"
+	)
+	default String npcFemaleVolume()
 	{
 		return "default";
 	}

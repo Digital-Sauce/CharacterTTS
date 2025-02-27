@@ -5,7 +5,10 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.NPC;
+import net.runelite.api.Actor;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
@@ -16,14 +19,11 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
-
 import com.microsoft.cognitiveservices.speech.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.Timer;
-import java.awt.event.ActionListener;
 
 @Slf4j
 @PluginDescriptor(
@@ -80,6 +80,29 @@ public class CharacterTTSPlugin extends Plugin
         }
     }
 
+    /**
+     * Pre-cache gender data when the user clicks on an NPC (e.g. using "Talk-to").
+     * This method uses the MenuOptionClicked event to detect when an NPC is clicked.
+     */
+    @Subscribe
+    public void onMenuOptionClicked(MenuOptionClicked event)
+    {
+        // Check if the option is "Talk-to" (or whichever option indicates interaction with an NPC)
+        if (event.getMenuOption().equalsIgnoreCase("Talk-to"))
+        {
+            // Attempt to retrieve the NPC from the local player's interacting target.
+            Actor interacting = client.getLocalPlayer().getInteracting();
+            if (interacting instanceof NPC)
+            {
+                NPC npc = (NPC) interacting;
+                // Pre-cache gender data using the NPC's unique ID and name.
+                GenderService genderService = new GenderService();
+                String gender = genderService.determineGender(npc.getId(), npc.getName());
+                log.info("Pre-cached gender for NPC {} (ID {}): {}", npc.getName(), npc.getId(), gender);
+            }
+        }
+    }
+
     @Subscribe
     public void onWidgetLoaded(WidgetLoaded event)
     {
@@ -87,11 +110,45 @@ public class CharacterTTSPlugin extends Plugin
         {
             Timer timer = new Timer(200, e -> {
                 Widget dialogueWidget = client.getWidget(WidgetInfo.DIALOG_NPC_TEXT);
+                Widget npcNameWidget = client.getWidget(WidgetInfo.DIALOG_NPC_NAME);
                 String dialogue = extractDialogue(dialogueWidget);
                 if (!dialogue.isEmpty())
                 {
-                    log.info("NPC dialog loaded: \"" + dialogue + "\"");
-                    playCustomText(dialogue, config.npcVoiceName(), config.npcPitch(), config.npcVolume());
+                    // Get the NPC's name from its widget (if available)
+                    String npcName = (npcNameWidget != null) ? npcNameWidget.getText() : "";
+                    // Attempt to get the unique NPC ID via interacting target.
+                    int npcId = getNpcId();
+
+                    // Use the gender service to determine NPC gender (preferring unique ID if available)
+                    GenderService genderService = new GenderService();
+                    String gender = genderService.determineGender(npcId, npcName);
+
+                    String voice;
+                    String pitch;
+                    String volume;
+
+                    if ("male".equals(gender))
+                    {
+                        voice = config.npcMaleVoiceName();
+                        pitch = config.npcMalePitch();
+                        volume = config.npcMaleVolume();
+                    }
+                    else if ("female".equals(gender))
+                    {
+                        voice = config.npcFemaleVoiceName();
+                        pitch = config.npcFemalePitch();
+                        volume = config.npcFemaleVolume();
+                    }
+                    else
+                    {
+                        // If gender is unknown, default to the player's voice.
+                        voice = config.azureVoiceName();
+                        pitch = config.pitch();
+                        volume = config.volume();
+                    }
+
+                    log.info("NPC dialog loaded: \"" + dialogue + "\" using voice: " + voice + " for gender: " + gender);
+                    playCustomText(dialogue, voice, pitch, volume);
                 }
             });
             timer.setRepeats(false);
@@ -163,7 +220,6 @@ public class CharacterTTSPlugin extends Plugin
     {
         try {
             text = text.replaceAll("(?i)<br\\s*/?>", " ");
-
             String ssml = "<speak version=\"1.0\" xml:lang=\"en-US\">" +
                     "<voice name=\"" + voice + "\">" +
                     "<prosody pitch=\"" + pitch + "\" volume=\"" + volume + "\">" +
@@ -190,15 +246,30 @@ public class CharacterTTSPlugin extends Plugin
 
     private BufferedImage loadIcon()
     {
-        try
-        {
+        try {
             return ImageIO.read(getClass().getResourceAsStream("/charactertts_icon.png"));
         }
-        catch (IOException | NullPointerException e)
-        {
+        catch (IOException | NullPointerException e) {
             log.error("Error loading icon", e);
             return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         }
+    }
+
+    /**
+     * Retrieves the NPC's unique id using the local player's interacting target.
+     * This is preferred when available.
+     */
+    private int getNpcId()
+    {
+        if (client.getLocalPlayer() != null)
+        {
+            Actor interacting = client.getLocalPlayer().getInteracting();
+            if (interacting instanceof NPC)
+            {
+                return ((NPC) interacting).getId();
+            }
+        }
+        return -1; // Return -1 if no unique id is available.
     }
 
     @Provides
