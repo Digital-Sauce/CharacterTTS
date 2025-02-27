@@ -48,8 +48,8 @@ Before using the plugin, set up your Azure credentials:
 
 3. **Save All:**  
 
-   - In the plugin settings, enter your Azure API key and region and select Save All to generate the voices list.
-   - One genereated, select your voices and adjust pitch and volume as desired.
+   - After entering Azure API key and region, select Save All to generate lists for voices.
+   - Once generated, select voices and adjust pitch and volume as desired.
    - You can test each voice in the TTS seciton of the menu
    - When finished, hit Save All again to apply changes
 
