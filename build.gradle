@@ -29,8 +29,8 @@ dependencies {
 	implementation 'org.json:json:20210307'
 }
 
-group = 'com.example'
-version = '1.0-SNAPSHOT'
+group = 'com.character-tts'
+version = '0.3'
 
 tasks.withType(JavaCompile).configureEach {
 	options.encoding = 'UTF-8'

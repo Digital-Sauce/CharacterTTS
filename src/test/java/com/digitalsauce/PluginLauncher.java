@@ -7,7 +7,9 @@ public class PluginLauncher
 {
 	public static void main(String[] args) throws Exception
 	{
-		//ExternalPluginManager.loadBuiltin(ExamplePlugin.class);
+		// Log a welcome message
+		System.out.println("Welcome");
+
 		ExternalPluginManager.loadBuiltin(CharacterTTSPlugin.class);
 		RuneLite.main(args);
 	}
