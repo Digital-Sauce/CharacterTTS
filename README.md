@@ -14,8 +14,14 @@ Character TTS is a simple yet powerful plugin that integrates Azure Text-to-Spee
     - GenderService queries the OSRS Wiki API to parse and cache gender data.  
     - If an NPC has a known gender, their voice will match the gender.  
     - If an NPC's gender is unknown, they will share the player’s voice.  
-- **Dialogue Playback:**  
-  Currently, only dialogue text is spoken.
+- **Audio Service:**  
+  - Real-time audio service with multi-stream audio mixer.  
+  - Multi-stream media controls for skipping and exiting from dialogue.  
+- **Distance-Based Sound Attenuation:**  
+  - Sound attenuation on floating text based on distance between characters.  
+  - Toggle to block floating text TTS during dialogue.  
+- **Player Voice Integration:**  
+  - Examine text is now read in the voice of the player.
 
 ## Installation
 
